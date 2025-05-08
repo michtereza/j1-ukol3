@@ -5,6 +5,7 @@ public class Pocitac {
     private Procesor cpu;
     private Pamet ram;
     private Disk pevnyDisk;
+    private Disk druhyDisk;
 
 
     public boolean jeZapnuty() {
@@ -51,7 +52,12 @@ public class Pocitac {
             long noveObsazeneMisto = (pevnyDisk.getVyuziteMisto() + velikost);
 
             if (noveObsazeneMisto > pevnyDisk.getKapacita()) {
-                System.err.println("NA DISKU NENI DOSTATEK MISTA");
+                noveObsazeneMisto = (druhyDisk.getVyuziteMisto() + velikost);
+                if (noveObsazeneMisto > druhyDisk.getKapacita()) {
+                    System.err.println("NIKDE NENI MISTO");
+                    return;
+                }
+                druhyDisk.setVyuziteMisto(noveObsazeneMisto);
                 return;
             }
             pevnyDisk.setVyuziteMisto(noveObsazeneMisto);
@@ -60,6 +66,15 @@ public class Pocitac {
 
     public void vymazSouboryOVelikosti(long velikost) {
         if (jeZapnuty()) {
+            if (druhyDisk.getVyuziteMisto() > 0) {
+                long noveObsazeneMisto = (druhyDisk.getVyuziteMisto() - velikost);
+                if (noveObsazeneMisto < 0) {
+                    druhyDisk.setVyuziteMisto(0);
+                    return;
+                }
+                druhyDisk.setVyuziteMisto(noveObsazeneMisto);
+                return;
+            }
             long noveObsazeneMisto = (pevnyDisk.getVyuziteMisto() - velikost);
             if (noveObsazeneMisto < 0) {
                 pevnyDisk.setVyuziteMisto(0);
@@ -93,9 +108,17 @@ public class Pocitac {
         this.pevnyDisk = pevnyDisk;
     }
 
+    public Disk getDruhyDisk() {
+        return druhyDisk;
+    }
+
+    public void setDruhyDisk(Disk druhyDisk) {
+        this.druhyDisk = druhyDisk;
+    }
 
     @Override
     public String toString() {
-        return "pocitac je: " + jeZapnutyString() + "\ncpu: " + cpu + "\nram: " + ram + "\npevnyDisk: " + pevnyDisk;
+        return "pocitac je: " + jeZapnutyString() + "\ncpu: " + cpu + "\nram: " + ram + "\npevnyDisk: " + pevnyDisk + "\ndruhyDisk: " + druhyDisk;
+
     }
 }
